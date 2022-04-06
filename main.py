@@ -4,8 +4,14 @@ import time
 import threading
 from queue import Queue
 import collections
+from pynput.keyboard import Key, Controller
 
 d = collections.deque(maxlen=10)
+keyboard = Controller()
+
+alt = Key.alt
+l_arrow = Key.left
+r_arrow = Key.right
 
 swiped = []
 
@@ -75,8 +81,16 @@ def outputCoords(in_q):
                 global swiped
                 if d[0][1] > d[9][1] + 200 and abs(d[0][2]-d[9][2]) < 100:
                     swiped.append("right")
+                    keyboard.press(alt)
+                    keyboard.press(r_arrow)
+                    keyboard.release(alt)
+                    keyboard.release(r_arrow)
                 elif d[0][1] < d[9][1] - 200 and abs(d[0][2]-d[9][2]) < 100:
                     swiped.append("left")
+                    keyboard.press(alt)
+                    keyboard.press(l_arrow)
+                    keyboard.release(alt)
+                    keyboard.release(l_arrow)
                 else:
                     swiped.append("none")
             if len(swiped) == 4:
@@ -93,5 +107,3 @@ if __name__ == "__main__":
 
     t2=threading.Thread(target=outputCoords, args=(q,))
     t2.start()
-
-# a solid amount of this code is stolen if im being honest
